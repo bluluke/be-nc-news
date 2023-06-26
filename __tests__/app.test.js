@@ -15,14 +15,15 @@ afterAll(() => {
 
 describe('GET /api/topics', () => { 
   test('200: responds with array of all topic objects with both slug and description properties', () => { 
-    //arrange 
-    //act 
+    
     return request(app)
     .get("/api/topics")
-     //assert
+    
     .expect(200)
     .then((topics) => { 
+      const { body } = topics;
       
+      expect(body).toHaveLength(3);
     })
   }); 
 });
