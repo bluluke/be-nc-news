@@ -5,7 +5,11 @@ exports.selectAllArticles = (req) => {
     return db
         .query("SELECT * FROM articles WHERE article_id = $1;", articleId)
         .then((articleObject) => {
+            if(articleObject.rows.length !== 0) {
             return articleObject.rows;
+            } else {
+                return Promise.reject({status: 404, msg: "Not found"})
+            }
         })
     
 }
@@ -14,20 +18,3 @@ exports.selectAllArticles = (req) => {
 
 
 
-/*
-  '_readableState',   '_events',
-      '_eventsCount',     '_maxListeners',
-      'socket',           'httpVersionMajor',
-      'httpVersionMinor', 'httpVersion',
-      'complete',         'rawHeaders',
-      'rawTrailers',      'joinDuplicateHeaders',
-      'aborted',          'upgrade',
-      'url',              'method',
-      'statusCode',       'statusMessage',
-      'client',           '_consuming',
-      '_dumped',          'next',
-      'baseUrl',          'originalUrl',
-      '_parsedUrl',       'params',
-      'query',            'res',
-      'route'
-      */

@@ -80,5 +80,21 @@ describe('GET /api/articles/:article_id', () => {
       expect(article).toHaveProperty("article_img_url", expect.any(String));
     })
   })
+  test('404: ERROR returns message if id does not exist', () => { 
+    return request(app)
+    .get("/api/articles/100")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
+  test('404: ERROR returns message if id does not exist', () => { 
+    return request(app)
+    .get("/api/articles/50")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
 })
 
