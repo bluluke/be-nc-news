@@ -9,6 +9,7 @@ exports.getArticles = (req, res, next) => {
         res.status(200).send(articleObject);
         })
         .catch((err) => {
+            console.log('errrror:', err.code);
             next(err)
         })
 }

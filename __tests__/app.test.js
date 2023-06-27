@@ -88,13 +88,21 @@ describe('GET /api/articles/:article_id', () => {
       expect(body.msg).toBe('Not found');
     })
   });
-  test('404: ERROR returns message if id does not exist', () => { 
+  test('404: ERROR responds with message if id does not exist', () => { 
     return request(app)
     .get("/api/articles/50")
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe('Not found');
     })
+  });
+  test.only('400: ERROR responds with an error when article_id is an invalid type', () => { 
+    return request(app)
+           .get("/api/articles/notanid")
+           .expect(400)
+           .then(({body}) => {
+            expect(body.msg).toBe("Bad request")
+           })
   });
 })
 
