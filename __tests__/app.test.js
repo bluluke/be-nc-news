@@ -3,6 +3,7 @@ const data = require('../db/data/test-data');
 const seed =  require("../db/seeds/seed");
 const request = require('supertest');
 const app = require('../db/app');
+const { toBeSortedBy } = require('jest-sorted');
 const endpointsData = require("../endpoints.json");
 
 
@@ -82,3 +83,27 @@ describe('GET /api/articles/:article_id', () => {
   });
 })
 
+describe('GET /api/articles', () => { 
+  test('200: responds with array of article objects', () => { 
+     
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(( articleData ) => {
+     
+      const body = articleData.body;
+      expect(body).toHaveLength(5);
+      expect([...body].reverse()).toBeSortedBy('created_at');
+      body.forEach((article) => {
+        expect(article).toHaveProperty("author", expect.any(String));
+        expect(article).toHaveProperty("title", expect.any(String));
+        expect(article).toHaveProperty("article_id", expect.any(Number));
+        expect(article).toHaveProperty("topic", expect.any(String));
+        expect(article).toHaveProperty("created_at", expect.any(String));
+        expect(article).toHaveProperty("votes", expect.any(Number));
+        expect(article).toHaveProperty("article_img_url", expect.any(String));
+        expect(article).toHaveProperty("comment_count", expect.any(String));
+      })
+    })
+  }); 
+});
