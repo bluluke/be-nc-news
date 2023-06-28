@@ -47,3 +47,38 @@ describe('GET /api', () => {
 });
 
 
+describe('GET /api/articles/:article_id', () => {
+  test('200: responds with articleobject requested', () => {
+    return request(app)
+    .get("/api/articles/1")
+    .expect(200)
+    .then((articleData) => {
+      const article = articleData.body[0];
+      expect(article).toHaveProperty("author", expect.any(String));
+      expect(article).toHaveProperty("title", expect.any(String));
+      expect(article).toHaveProperty("article_id", 1);
+      expect(article).toHaveProperty("body", expect.any(String));
+      expect(article).toHaveProperty("topic", expect.any(String));
+      expect(article).toHaveProperty("created_at", expect.any(String));
+      expect(article).toHaveProperty("votes", expect.any(Number));
+      expect(article).toHaveProperty("article_img_url", expect.any(String));
+    })
+  });
+  test('404: ERROR returns message if id does not exist', () => { 
+    return request(app)
+    .get("/api/articles/100")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
+  test('400: ERROR responds with an error when article_id is an invalid type', () => { 
+    return request(app)
+           .get("/api/articles/notanid")
+           .expect(400)
+           .then(({body}) => {
+            expect(body.msg).toBe("Bad request")
+           })
+  });
+})
+
