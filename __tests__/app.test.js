@@ -96,7 +96,7 @@ describe('GET /api/articles/:article_id', () => {
       expect(body.msg).toBe('Not found');
     })
   });
-  test.only('400: ERROR responds with an error when article_id is an invalid type', () => { 
+  test('400: ERROR responds with an error when article_id is an invalid type', () => { 
     return request(app)
            .get("/api/articles/notanid")
            .expect(400)
