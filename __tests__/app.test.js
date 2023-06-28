@@ -92,7 +92,7 @@ describe('GET /api/articles', () => {
     .then(( articleData ) => {
      
       const body = articleData.body;
-      expect(body).toHaveLength(5);
+      expect(body).toHaveLength(13);
       expect([...body].reverse()).toBeSortedBy('created_at');
       body.forEach((article) => {
         expect(article).toHaveProperty("author", expect.any(String));
@@ -103,6 +103,7 @@ describe('GET /api/articles', () => {
         expect(article).toHaveProperty("votes", expect.any(Number));
         expect(article).toHaveProperty("article_img_url", expect.any(String));
         expect(article).toHaveProperty("comment_count", expect.any(String));
+  
       })
     })
   }); 
