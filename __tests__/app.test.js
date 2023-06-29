@@ -146,9 +146,64 @@ describe('/api/articles/:article_id/comments', () => {
             expect(body.msg).toBe("Bad request")
            })
   });
-  test('404: ERROR returns message if id does not exist', () => { 
+  test('404: ERROR returns message if article id does not exist', () => { 
     return request(app)
     .get('/api/articles/91/comments')
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
+});
+
+describe('POST /api/articles/:article_id/comments', () => { 
+  test('201: responds with new comment object after being added to db', () => { 
+   const newComment = {
+    username: 'butter_bridge',
+    body: 'I love this article more than baclava.'
+   };
+   return request(app)
+   .post("/api/articles/8/comments")
+   .send(newComment)
+   .expect(201)
+   .then((response) => {
+    const comment = response.body.comment[0];
+    expect(comment.comment_id).toBe(19);
+    expect(comment.body).toBe('I love this article more than baclava.');
+    expect(comment.article_id).toBe(8);
+    expect(comment.author).toBe('butter_bridge')
+    expect(comment.votes).toBe(0);
+   });
+  }); 
+  test('400: ERROR responds with an error when article_id is an invalid type', () => { 
+    return request(app)
+           .post('/api/articles/notAnId/comments')
+           .expect(400)
+           .then(({body}) => {
+            expect(body.msg).toBe("Bad request")
+           })
+  });
+  test('404: ERROR returns message if article_id does not exist', () => { 
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'I love this article more than baclava.'
+     };
+    return request(app)
+    .post('/api/articles/91/comments')
+    .send(newComment)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
+  test('404: ERROR returns message if username does not exist', () => { 
+    const newComment = {
+      username: 'Boromir',
+      body: 'I love this article more than Minas Tirith.'
+     };
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment)
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe('Not found');
