@@ -209,6 +209,31 @@ describe('POST /api/articles/:article_id/comments', () => {
       expect(body.msg).toBe('Not found');
     })
   });
+  test('404: ERROR returns message if req body has wrong keys', () => { 
+    const newComment = {
+      name: 'Boromir',
+      bodytext: 'I love this article more than Minas Tirith.'
+     };
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
+  test('404: ERROR returns message if req body has missing key', () => { 
+    const newComment = {
+      name: 'Alex_Young'
+     };
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
 });
 
 
