@@ -108,3 +108,52 @@ describe('GET /api/articles', () => {
     })
   }); 
 });
+
+describe('/api/articles/:article_id/comments', () => { 
+  test('200: should return array of comments for the given article_id, most recent comments first', () => { 
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then((data) => {
+      const body = data.body.comments;
+      expect(body).toHaveLength(11);
+      expect(body).toBeSortedBy('created_at');
+      body.forEach((comment) => {
+        expect(comment).toHaveProperty("comment_id", expect.any(Number));
+        expect(comment).toHaveProperty("votes", expect.any(Number));
+        expect(comment).toHaveProperty("created_at", expect.any(String));
+        expect(comment).toHaveProperty("author", expect.any(String));
+        expect(comment).toHaveProperty("body", expect.any(String));
+        expect(comment).toHaveProperty("article_id", expect.any(Number));
+      })
+    })
+  }); 
+  test('200: empty array when article_id has no associated comments', () => { 
+    return request(app)
+    .get('/api/articles/13/comments')
+    .expect(200)
+    .then((data) => {
+      const body = data.body.comments;
+      expect(body).toEqual([]);
+    });
+    
+  });
+  test('400: ERROR responds with an error when article_id is an invalid type', () => { 
+    return request(app)
+           .get('/api/articles/notAnId/comments')
+           .expect(400)
+           .then(({body}) => {
+            expect(body.msg).toBe("Bad request")
+           })
+  });
+  test('404: ERROR returns message if id does not exist', () => { 
+    return request(app)
+    .get('/api/articles/91/comments')
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
+});
+
+
