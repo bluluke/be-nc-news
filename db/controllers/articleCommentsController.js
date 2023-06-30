@@ -1,4 +1,4 @@
-const { selectArticleComments, insertComment } = require('../models/articleCommentsModel');
+const { selectArticleComments, insertComment, removeComment} = require('../models/articleCommentsModel');
 const { checkExists, checkValid } = require('../models/checkModels');
 
 
@@ -29,11 +29,9 @@ exports.postComment = (req, res, next) => {
     const articleId = Object.values(req.params); 
     const articleIdNum = Number(articleId);
 
-  
     const promise1 = checkExists('article_id', 'articles', Number(articleId[0]));
     const promise2 = checkExists('username', 'users', usernameReq);
     const promise3 = checkValid(usernameProp, 'username');
-    
    
     Promise.all([promise1, promise2, promise3])
     .then((fulfilledProms) => {
@@ -49,6 +47,28 @@ exports.postComment = (req, res, next) => {
             next(err)
      });   
 }
+
+
+exports.deleteComment = (req, res, next) => {
+    const commentId = Number(req.params.comment_id);
+
+
+    checkExists('comment_id', 'comments', commentId)
+    .then((idExists) => {   
+        return removeComment(commentId, idExists)
+    })
+    .then((isDeleted) => {
+        if(isDeleted) {
+            res.status(204).send({});
+        } 
+    })
+    .catch((err) => {
+       
+        next(err)
+    })
+}
+
+
 
 
 

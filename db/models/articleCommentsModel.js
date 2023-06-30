@@ -23,9 +23,6 @@ exports.insertComment = (comment, articleId, username, articleIdExists, username
     const insertQuery = `INSERT INTO comments
         (body, article_id, author)
         VALUES ($1, $2, $3) RETURNING*;`
-        
-  
- 
 
     if(articleIdExists && usernameExists && usernamePropValid && usernameDefined && commentDefined) {
        return db
@@ -49,3 +46,17 @@ exports.insertComment = (comment, articleId, username, articleIdExists, username
 
 
 
+exports.removeComment = (comment_id, idExists) => {
+
+    if(idExists) {
+        return db
+        .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`, [comment_id])
+        .then((deletedComment) => {
+                if(deletedComment.rows !== 0) {
+                    return true;
+                }
+        })
+    }  else {
+        return Promise.reject({status: 404, msg: "Not found"})
+    }
+}
