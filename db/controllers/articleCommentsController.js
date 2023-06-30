@@ -54,9 +54,6 @@ exports.deleteComment = (req, res, next) => {
 
 
     checkExists('comment_id', 'comments', commentId)
-    .then((idExists) => {
-        return idExists
-    })
     .then((idExists) => {   
         return removeComment(commentId, idExists)
     })
