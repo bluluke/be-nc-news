@@ -210,7 +210,7 @@ describe('POST /api/articles/:article_id/comments', () => {
       expect(body.msg).toBe('Not found');
     })
   });
-  //trying to fix this
+
   test('400: ERROR returns message if req body has wrong key', () => { 
     const newComment = {
       name: 'butter_bridge',
