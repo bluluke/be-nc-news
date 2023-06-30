@@ -175,6 +175,25 @@ describe('POST /api/articles/:article_id/comments', () => {
     expect(comment.votes).toBe(0);
    });
   }); 
+  test('201: responds with new correctly formed comment object even if there are unnecessary properties in request object', () => { 
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'I enjoyed it.',
+      notNeeded: 'This prop is not needed.'
+     };
+     return request(app)
+      .post("/api/articles/8/comments")
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        const comment = response.body.comment[0];
+        expect(comment.comment_id).toBe(19);
+        expect(comment.body).toBe('I enjoyed it.');
+        expect(comment.article_id).toBe(8);
+        expect(comment.author).toBe('butter_bridge')
+        expect(comment.votes).toBe(0);
+   });
+  }); 
   test('400: ERROR responds with an error when article_id is an invalid type', () => { 
     return request(app)
            .post('/api/articles/notAnId/comments')
