@@ -16,21 +16,36 @@ exports.selectArticleComments = (articleId, idExists) => {
 };
 
 
-exports.insertComment = (comment, articleId, articleIdExists, usernameExists) => {
-    const {body, username} = comment; 
-    
+exports.insertComment = (comment, articleId, username, articleIdExists, usernameExists, usernamePropValid) => {
+
+    const usernameDefined = typeof username !== 'undefined';
+    const commentDefined = typeof comment !== 'undefined';
     const insertQuery = `INSERT INTO comments
         (body, article_id, author)
-        VALUES ($1, $2, $3) RETURNING *;`
+        VALUES ($1, $2, $3) RETURNING*;`
         
-    if(articleIdExists && usernameExists) {   
-       return db.query(insertQuery, [body, Number(articleId[0]), username])
-        .then((data) => {
+  
+ 
+
+    if(articleIdExists && usernameExists && usernamePropValid && usernameDefined && commentDefined) {
+       return db
+       .query(insertQuery, [comment, articleId, username])
+       .then((data) => {
+            
             return data.rows;
         }) 
     } else { 
-         return Promise.reject({status: 404, msg: "Not found"})
-     }
+         if(usernamePropValid === false) {
+            return Promise.reject({status: 400, msg: "Bad request"})
+         }
+         if(usernameExists === false || articleIdExists === false) {
+            return Promise.reject({status: 404, msg: "Not found"})
+         } 
+         else {
+            return Promise.reject({status: 400, msg: "Bad request"})
+         } 
+    }
 }
+
 
 
