@@ -341,3 +341,35 @@ describe('PATCH /api/articles/:article_id', () => {
   });
 });
 
+describe('DELETE /api/comments/:comment_id', () => { 
+  test('204: no content', () => { 
+    return request(app)
+    .delete("/api/comments/1")
+    .expect(204)
+    .then((response) => {
+      expect(response.body).toEqual({});
+      return db
+      .query('SELECT * FROM comments WHERE comment_id = 1')
+      .then((response) => {
+        expect(response.rows.length).toBe(0);
+      })
+    })   
+  }); 
+  test('404: comment_id does not exist', () => { 
+    return request(app)
+    .delete("/api/comments/199")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+
+  });
+  test('400: comment_id not valid type', () => { 
+    return request(app)
+    .delete("/api/comments/apple")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Bad request');
+    });
+  })
+});
