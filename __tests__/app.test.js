@@ -257,5 +257,87 @@ describe('POST /api/articles/:article_id/comments', () => {
     })
   });
 });
+describe('PATCH /api/articles/:article_id', () => { 
+  test('200: responds with updated article', () => { 
+   const incVote = { inc_votes : 2};
 
+   return request(app)
+   .patch("/api/articles/1")
+   .send(incVote)
+   .expect(200)
+   .then((response) => {
+    const article = response.body.article[0];
+
+    expect(article.author).toBe("butter_bridge");
+    expect(article.topic).toBe('mitch');
+    expect(article.body).toBe("I find this existence challenging");
+    expect(article.votes).toBe(102);
+    expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+    expect(article.article_id).toBe(1);
+    expect(article.created_at).toBe('2020-07-09T20:11:00.000Z');
+    expect(article.title).toBe("Living in the shadow of a great man");
+   });
+  });
+  test('200: responds with updatedArticle even if request object has additional unnecessary property', () => { 
+    const incVote = { inc_votes : 2, notNeeded: 300};
+
+    return request(app)
+    .patch("/api/articles/1")
+    .send(incVote)
+    .expect(200)
+    .then((response) => {
+    const article = response.body.article[0];
+
+    expect(article.author).toBe("butter_bridge");
+    expect(article.topic).toBe('mitch');
+    expect(article.body).toBe("I find this existence challenging");
+    expect(article.votes).toBe(102);
+    expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+    expect(article.article_id).toBe(1);
+    expect(article.created_at).toBe('2020-07-09T20:11:00.000Z');
+    expect(article.title).toBe("Living in the shadow of a great man");
+    });
+  });
+  test('400: ERROR responds with an error when article_id is invalid', () => { 
+    const incVote = { inc_votes : 5};
+
+    return request(app)
+    .patch("/api/articles/notid")
+    .send(incVote)
+    .expect(400)
+    .then(({ body }) => {
+    expect(body.msg).toBe("Bad request")
+    })
+  });  
+  test('404: ERROR returns message if article_id does not exist', () => { 
+    const incVote = { inc_votes : 5};
+    return request(app)
+    .patch('/api/articles/62')
+    .send(incVote)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not found');
+    })
+  });
+  test('400: ERROR responds with message if reqest body has invalid key', () => { 
+    const incVote = { sink_vote : 7};
+    return request(app)
+    .patch('/api/articles/1')
+    .send(incVote)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Bad request');
+    })
+  });
+  test('400: ERROR responds with message if reqest body empty', () => { 
+    const incVote = {};
+    return request(app)
+    .patch('/api/articles/1')
+    .send(incVote)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Bad request');
+    })
+  });
+});
 
