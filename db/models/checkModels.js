@@ -14,5 +14,11 @@ exports.checkExists = (column, table, id) => {
 } 
 
 
-
+exports.checkValid = (name, expectedName) => {
+    if(name === expectedName) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
