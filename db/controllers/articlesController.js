@@ -15,23 +15,15 @@ exports.getArticles = (req, res, next) => {
 }
 
 exports.patchVote = (req, res, next) => {
-    const incPropInArray = Object.keys(req.body);
-    const incProp = incPropInArray[0];
-    const incValInArray = Object.values(req.body);
-    const incVal = incValInArray[0];
-    const articleId = Object.values(req.params); 
-    const articleIdNum = Number(articleId[0]);
-
+    const incVal = req.body.inc_votes;
+    const articleIdNum = Number(req.params.article_id);
     
-    const promise1 = checkExists('article_id', 'articles', articleIdNum);
-    const promise2 = checkValid(incProp, 'inc_votes');
-    
-    Promise.all([promise1, promise2])
-    .then((fulProms) => {
-        return fulProms;
+    checkExists('article_id', 'articles', articleIdNum)
+    .then((fulProm) => {
+        return fulProm;
     })
-    .then((fulProms) => {
-        return updateVote(incVal, articleIdNum, fulProms[0], fulProms[1])
+    .then((fulProm) => {
+        return updateVote(incVal, articleIdNum, fulProm)
     })
     .then((updatedArticle) => {
         res.status(200).send({ article: updatedArticle });
@@ -40,3 +32,5 @@ exports.patchVote = (req, res, next) => {
         next(err)
     });
 }
+
+

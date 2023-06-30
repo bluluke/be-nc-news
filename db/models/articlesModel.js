@@ -15,10 +15,13 @@ exports.selectAllArticles = (req) => {
 }
 
 
-exports.updateVote = (incVal, articleIdNum, idExists, validKey) => {
+exports.updateVote = (incVal, articleIdNum, idExists) => {
  
-    
-    if(idExists && validKey) {
+    const isIncValDefined = typeof incVal !== 'undefined';
+   
+
+    if(idExists && isIncValDefined) {
+      
         return db   
             .query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2;`, [incVal, articleIdNum])
             .then(() => {
@@ -27,13 +30,13 @@ exports.updateVote = (incVal, articleIdNum, idExists, validKey) => {
                 return db.query(`SELECT * FROM articles WHERE article_id = 1;`)
             }).then((result) => {
                 return result.rows;
-            })
-    } else {
-        if(validKey === false) {
+            })            
+    } else {  
+         if(isIncValDefined === false) {
             return Promise.reject({status: 400, msg: "Bad request"});
-        } else {
+         } else {
         return Promise.reject({status: 404, msg: "Not found"});
-        }
+         }
     }
 }
 

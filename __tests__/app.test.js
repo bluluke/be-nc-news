@@ -258,7 +258,7 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
 });
 describe('PATCH /api/articles/:article_id', () => { 
-  test('201: responds with updated article', () => { 
+  test('200: responds with updated article', () => { 
    const incVote = { inc_votes : 2};
 
    return request(app)
@@ -278,7 +278,7 @@ describe('PATCH /api/articles/:article_id', () => {
     expect(article.title).toBe("Living in the shadow of a great man");
    });
   });
-  test('201: responds with updatedArticle even if request object has additional unnecessary property', () => { 
+  test('200: responds with updatedArticle even if request object has additional unnecessary property', () => { 
     const incVote = { inc_votes : 2, notNeeded: 300};
 
     return request(app)
