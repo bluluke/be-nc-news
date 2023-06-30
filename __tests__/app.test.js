@@ -196,6 +196,7 @@ describe('POST /api/articles/:article_id/comments', () => {
       expect(body.msg).toBe('Not found');
     })
   });
+  
   test('404: ERROR returns message if username does not exist', () => { 
     const newComment = {
       username: 'Boromir',
@@ -209,29 +210,31 @@ describe('POST /api/articles/:article_id/comments', () => {
       expect(body.msg).toBe('Not found');
     })
   });
-  test('404: ERROR returns message if req body has wrong keys', () => { 
+  //trying to fix this
+  test('400: ERROR returns message if req body has wrong key', () => { 
     const newComment = {
-      name: 'Boromir',
-      bodytext: 'I love this article more than Minas Tirith.'
+      name: 'butter_bridge',
+      body: 'I love this article more than butter.'
      };
     return request(app)
     .post('/api/articles/1/comments')
     .send(newComment)
-    .expect(404)
+    .expect(400)
     .then(({ body }) => {
-      expect(body.msg).toBe('Not found');
+      expect(body.msg).toBe('Bad request');
     })
   });
-  test('404: ERROR returns message if req body has missing key', () => { 
+  
+  test('400: ERROR returns message if req body has missing key', () => { 
     const newComment = {
-      name: 'Alex_Young'
+      username: 'butter_bridge'
      };
     return request(app)
     .post('/api/articles/1/comments')
     .send(newComment)
-    .expect(404)
+    .expect(400)
     .then(({ body }) => {
-      expect(body.msg).toBe('Not found');
+      expect(body.msg).toBe('Bad request');
     })
   });
 });
