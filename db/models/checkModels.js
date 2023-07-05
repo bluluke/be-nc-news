@@ -22,3 +22,18 @@ exports.checkValid = (name, expectedName) => {
     }
 }
 
+exports.checkColExists = (col, table, item) => {
+    return db
+            .query(`SELECT ${col}  FROM ${table} WHERE ${col} = $1;`, [item])
+            .then((data) => {
+                if(data.rows.length === 0) {
+                  
+                    return false;
+                } else {
+                 
+                    return true;
+                }
+                })
+}
+
+

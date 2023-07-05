@@ -108,6 +108,45 @@ describe('GET /api/articles', () => {
     })
   }); 
 });
+describe('GET /api/articles?topic=mitch', () => { 
+  test('200: returns array of article objects with the topic mitch', () => { 
+    return request(app)
+    .get('/api/articles?topic=mitch')
+    .expect(200)
+    .then(({ body }) => {
+      const mitchArticles = body;
+      
+      expect(mitchArticles).toHaveLength(12);
+      mitchArticles.forEach((article) => {
+        expect(article).toHaveProperty("author", expect.any(String));
+      expect(article).toHaveProperty("title", expect.any(String));
+      expect(article).toHaveProperty("article_id", expect.any(Number));
+      expect(article.topic).toBe('mitch')
+      expect(article).toHaveProperty("created_at", expect.any(String));
+      expect(article).toHaveProperty("votes", expect.any(Number));
+      expect(article).toHaveProperty("article_img_url", expect.any(String));
+      expect(article).toHaveProperty("comment_count", expect.any(String));
+      })
+    })
+  }); 
+  test('200: responds', () => {
+    return request(app)
+    .get('/api/articles?topic=paper')
+    .expect(200)
+    .then(({ body}) => {
+      expect(body).toEqual([]);
+    })
+  })
+  test('404: responds with message if topic does not exists', () => { 
+    return request(app)
+      .get('/api/articles?topic=apple')
+      .expect(404)
+      .then(({ body}) => {
+        expect(body.msg).toBe('Not found');
+      })
+  });
+
+});
 
 describe('/api/articles/:article_id/comments', () => { 
   test('200: should return array of comments for the given article_id, most recent comments first', () => { 
@@ -155,7 +194,6 @@ describe('/api/articles/:article_id/comments', () => {
     })
   });
 });
-
 describe('POST /api/articles/:article_id/comments', () => { 
   test('201: responds with new comment object after being added to db', () => { 
    const newComment = {
@@ -340,7 +378,6 @@ describe('PATCH /api/articles/:article_id', () => {
     })
   });
 });
-
 describe('DELETE /api/comments/:comment_id', () => { 
   test('204: no content', () => { 
     return request(app)
@@ -373,9 +410,6 @@ describe('DELETE /api/comments/:comment_id', () => {
     });
   })
 });
-
-
-
 describe('GET /api/users', () => { 
   test('200: responds with array of all user objects', () => { 
     
