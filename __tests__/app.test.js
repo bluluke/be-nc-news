@@ -63,6 +63,7 @@ describe('GET /api/articles/:article_id', () => {
       expect(article).toHaveProperty("created_at", expect.any(String));
       expect(article).toHaveProperty("votes", expect.any(Number));
       expect(article).toHaveProperty("article_img_url", expect.any(String));
+      expect(article).toHaveProperty("comment_count", expect.any(Number));
     })
   });
   test('404: ERROR returns message if id does not exist', () => { 
