@@ -9,7 +9,6 @@ exports.getArticles = (req, res, next) => {
         res.status(200).send(articleObject);
         })
         .catch((err) => {
-     
             next(err)
         })
 }
